@@ -1,9 +1,11 @@
 package com.pkest.libs.aliyun;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.Labels;
 import com.aliyuncs.AcsRequest;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.FormatType;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.pkest.libs.aliyun.exception.AliyunClientException;
@@ -56,23 +58,28 @@ public class AliyunClient{
     public <T extends HYAliyunResponse> T doAction(AcsRequest request, Class<T> clazz) throws ClientException{
         HttpResponse response = null;
         try {
+            if(!"GET".equals(request.getMethod())){
+                String requestBody = JSONObject.toJSONString(request, Labels.includes("form"));
+                if(!"{}".equals(requestBody)){
+                    request.setHttpContent(requestBody.getBytes(),"UTF-8", FormatType.JSON);
+                }
+            }
             response = getClient().doAction(request);
             String content = new String(response.getHttpContent());
-            logger.debug("{} {}", request.getMethod(), response.getUrl());
-            logger.debug("RequestBody: {}", new String(request.getHttpContent()));
-            logger.debug("Code: {} content: {}", response.getStatus(), content);
+            logger.info("{} {}", request.getMethod(), response.getUrl());
+            logger.debug("Status: {} content: {}", response.getStatus(), content);
             HYAliyunResponse hyAliyunResponse = JSONObject.parseObject(content, clazz);
             hyAliyunResponse.setResponse(response);
             return  (T)hyAliyunResponse;
         } catch (ClientException e) {
             if(response != null) {
                 logger.error("{} {}", request.getMethod(), response.getUrl());
-                logger.error("RequestBody: {}", new String(request.getHttpContent()));
                 logger.error("Code: {} content: {}", response.getStatus(), new String(response.getHttpContent()));
             }
             logger.error("{} {}", e.getClass().getName(), e.getMessage());
             throw e;
         }
     }
+
 
 }

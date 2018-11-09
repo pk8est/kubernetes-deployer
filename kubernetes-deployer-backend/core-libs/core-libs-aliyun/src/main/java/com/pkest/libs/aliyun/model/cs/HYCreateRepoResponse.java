@@ -10,8 +10,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class HYDescribeClusterDetailResponse extends HYAliyunResponse{
+public class HYCreateRepoResponse extends HYAliyunResponse{
 
-    private String zoneId;
 
 }

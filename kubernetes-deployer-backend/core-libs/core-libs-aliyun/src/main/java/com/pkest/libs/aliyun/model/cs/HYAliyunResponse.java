@@ -2,17 +2,25 @@ package com.pkest.libs.aliyun.model.cs;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.http.HttpResponse;
+import com.pkest.libs.aliyun.util.GsonUtils;
 import com.pkest.libs.aliyun.util.HYJSONObject;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by wuzhonggui on 2018/11/9.
  * QQ: 2731429978
  * Email: pk8est@qq.com
  */
+@Getter
+@Setter
 public class HYAliyunResponse{
 
     private transient HttpResponse response;
     private transient JSONObject httpContentObject;
+    private String code;
+    private String message;
+    private String requestId;
 
     public HttpResponse getResponse() {
         return response;
@@ -60,5 +68,9 @@ public class HYAliyunResponse{
 
     public <T> T get(String key, T defaultValue) {
         return HYJSONObject.get(getJSONObject(), key, defaultValue);
+    }
+
+    public String toString(){
+        return GsonUtils.getGson().toJson(this);
     }
 }

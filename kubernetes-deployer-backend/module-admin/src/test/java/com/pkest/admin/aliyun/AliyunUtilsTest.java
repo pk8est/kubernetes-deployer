@@ -1,9 +1,10 @@
 package com.pkest.admin.aliyun;
 
+import com.aliyuncs.profile.DefaultProfile;
 import com.pkest.backend.admin.AdminApplication;
-import com.pkest.common.util.GsonUtils;
 import com.pkest.libs.aliyun.AliyunCsClient;
 import com.pkest.libs.aliyun.model.cs.HYAliyunResponse;
+import com.pkest.libs.aliyun.model.cs.HYCreateRepoRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,12 +46,12 @@ public class AliyunUtilsTest {
 
     @After
     public void print(){
-        String vpc_id = response.get("vpc_id", "");
+        /*String vpc_id = response.get("vpc_id", "");
         int data_disk_size = response.get("data_disk_size", 100);
         logger.info("vpc_id: {}", vpc_id);
         logger.info("data_disk_size: {}", data_disk_size);
-        logger.info("upgrade_components.Kubernetes: {}", response.get("upgrade_components.Kubernetes"));
-        logger.info("response: {}", GsonUtils.getGson().toJson(response));
+        logger.info("upgrade_components.Kubernetes: {}", response.get("upgrade_components.Kubernetes"));*/
+        logger.info("response: {}", response);
     }
 
     @Test
@@ -58,6 +59,15 @@ public class AliyunUtilsTest {
         response = client.describeClusterDetail(cluster);
     }
 
-
+    @Test
+    public void CreateRepoRequest() throws Exception {
+        DefaultProfile.addEndpoint("cn-shenzhen", "cn-shenzhen", "cr", "cr.cn-shenzhen.aliyuncs.com");
+        HYCreateRepoRequest.Repo repo = new HYCreateRepoRequest.Repo();
+        repo.setRepoName("test-001");
+        repo.setRepoNamespace("default");
+        repo.setRepoType("PRIVATE");
+        repo.setSummary("test");
+        response = client.createRepoRequest(new HYCreateRepoRequest(repo));
+    }
 
 }

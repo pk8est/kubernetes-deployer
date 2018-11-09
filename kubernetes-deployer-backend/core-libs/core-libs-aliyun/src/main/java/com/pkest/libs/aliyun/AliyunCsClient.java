@@ -1,6 +1,10 @@
 package com.pkest.libs.aliyun;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.Labels;
 import com.aliyuncs.exceptions.ClientException;
+import com.pkest.libs.aliyun.model.cs.HYCreateRepoRequest;
+import com.pkest.libs.aliyun.model.cs.HYCreateRepoResponse;
 import com.pkest.libs.aliyun.model.cs.HYDescribeClusterDetailRequest;
 import com.pkest.libs.aliyun.model.cs.HYDescribeClusterDetailResponse;
 
@@ -21,6 +25,10 @@ public class AliyunCsClient extends AliyunClient{
 
     public HYDescribeClusterDetailResponse describeClusterDetail(HYDescribeClusterDetailRequest request) throws ClientException {
         return doAction(request, HYDescribeClusterDetailResponse.class);
+    }
+
+    public HYCreateRepoResponse createRepoRequest(HYCreateRepoRequest request) throws Exception {
+        return doAction(request, HYCreateRepoResponse.class);
     }
 
 }

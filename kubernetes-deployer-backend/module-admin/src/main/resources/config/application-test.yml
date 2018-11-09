@@ -1,0 +1,4 @@
+log:
+  level: error
+  appender: ROLLFILE
+  path: /data/weblog/${spring.application.name}

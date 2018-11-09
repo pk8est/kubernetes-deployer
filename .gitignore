@@ -1,0 +1,8 @@
+.settings
+.classpath
+.project
+.idea
+*.class
+*.iml
+target
+application-dev.yml

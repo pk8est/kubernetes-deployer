@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.pkest.backend.admin.entity.Projects" table="projects" schema="deployer">
+        <id name="id">
+            <column name="id" sql-type="int(10) unsigned"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(255)"/>
+        </property>
+        <property name="repository">
+            <column name="repository" sql-type="varchar(255)"/>
+        </property>
+        <property name="hash">
+            <column name="hash" sql-type="varchar(255)"/>
+        </property>
+        <property name="branch">
+            <column name="branch" sql-type="varchar(255)"/>
+        </property>
+        <property name="privateKey">
+            <column name="private_key" sql-type="text"/>
+        </property>
+        <property name="publicKey">
+            <column name="public_key" sql-type="text"/>
+        </property>
+        <property name="buildsToKeep">
+            <column name="builds_to_keep" sql-type="int(10) unsigned"/>
+        </property>
+        <property name="url">
+            <column name="url" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="buildUrl">
+            <column name="build_url" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="lastRun">
+            <column name="last_run" sql-type="datetime" not-null="true"/>
+        </property>
+        <property name="createdAt">
+            <column name="created_at" sql-type="timestamp" not-null="true"/>
+        </property>
+        <property name="updatedAt">
+            <column name="updated_at" sql-type="timestamp" not-null="true"/>
+        </property>
+        <property name="deletedAt">
+            <column name="deleted_at" sql-type="timestamp" not-null="true"/>
+        </property>
+        <property name="lastMirrored">
+            <column name="last_mirrored" sql-type="datetime" not-null="true"/>
+        </property>
+        <property name="allowOtherBranch">
+            <column name="allow_other_branch" sql-type="tinyint(1)"/>
+        </property>
+        <property name="includeDev">
+            <column name="include_dev" sql-type="tinyint(1)"/>
+        </property>
+        <property name="status">
+            <column name="status" sql-type="int(10)"/>
+        </property>
+    </class>
+</hibernate-mapping>

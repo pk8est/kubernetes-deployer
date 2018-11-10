@@ -1,7 +1,9 @@
 package com.pkest.libs.aliyun.model.cs;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.http.FormatType;
 import com.aliyuncs.http.HttpResponse;
+import com.sun.deploy.xml.XMLParser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +26,9 @@ public class HYAliyunListResponse<T extends HYAliyunResponse> extends HYAliyunRe
 
     public HYAliyunListResponse(HttpResponse response, Class<T> clazz) {
         setResponse(response);
-        setList(JSONObject.parseArray(response.getHttpContent().length == 0 ? "[]" : new String(response.getHttpContent()), clazz));
+        if(FormatType.JSON.equals(response.getHttpContentType())){
+            setList(JSONObject.parseArray(response.getHttpContent().length == 0 ? "[]" : new String(response.getHttpContent()), clazz));
+        }
     }
 
     public int size(){

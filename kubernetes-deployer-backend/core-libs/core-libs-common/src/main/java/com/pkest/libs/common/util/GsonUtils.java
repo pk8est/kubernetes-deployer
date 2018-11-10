@@ -1,4 +1,4 @@
-package com.pkest.libs.aliyun.util;
+package com.pkest.libs.common.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

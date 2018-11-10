@@ -2,8 +2,8 @@ package com.pkest.libs.aliyun.model.cs;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.http.HttpResponse;
-import com.pkest.libs.aliyun.util.GsonUtils;
-import com.pkest.libs.aliyun.util.HYJSONObject;
+import com.pkest.libs.common.util.GsonUtils;
+import com.pkest.libs.common.util.HYJSONObject;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -11,20 +11,23 @@
 
     <artifactId>core-libs-kubernetes</artifactId>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- kubernetes sdk -->
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-model</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-client</artifactId>
-            </dependency>
-            <!-- kubernetes sdk -->
+    <dependencies>
+        <dependency>
+            <groupId>pkest.com</groupId>
+            <artifactId>core-libs-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- kubernetes sdk -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+        </dependency>
+        <!-- kubernetes sdk -->
 
-        </dependencies>
-    </dependencyManagement>
+    </dependencies>
 
 </project>

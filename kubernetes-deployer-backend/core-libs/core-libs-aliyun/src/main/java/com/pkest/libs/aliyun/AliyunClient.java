@@ -61,15 +61,10 @@ public class AliyunClient{
         AliyunClient.serializeConfig = serializeConfig;
     }
 
-    public AliyunClient(){
-
-    }
+    public AliyunClient(){}
 
     public AliyunClient(String region, String accessKey, String accessSecret){
-        profile = DefaultProfile.getProfile(
-                region,
-                accessKey,
-                accessSecret);
+        profile = DefaultProfile.getProfile(region, accessKey, accessSecret);
         client = new DefaultAcsClient(profile);
     }
 
@@ -83,13 +78,13 @@ public class AliyunClient{
                 }
             }
             HttpResponse response = getClient().doAction(request);
-            logger.info("{} {} {}", response.getStatus(), request.getMethod(), response.getUrl());
+            logger.info("{} {} {}", request.getMethod(), response.getStatus(), response.getUrl());
             if(logger.isDebugEnabled()){
-                logger.debug("content: {}", new String(response.getHttpContent()));
+                logger.debug("Content: {}", new String(response.getHttpContent()));
             }
             return response;
         } catch (ClientException e) {
-            logger.error("[{}] ErrCode:{}, ErrorType:{} ErrMsg: {}",
+            logger.error("[{}]ErrCode:{}, ErrorType:{} ErrMsg: {}",
                     e.getRequestId(), e.getClass().getName(), e.getErrCode(), e.getErrorType(), e.getErrMsg());
             throw e;
         }

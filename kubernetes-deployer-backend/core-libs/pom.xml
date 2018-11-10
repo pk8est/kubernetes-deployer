@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
+        <module>core-libs-common</module>
         <module>core-libs-kubernetes</module>
         <module>core-libs-aliyun</module>
     </modules>
@@ -18,10 +19,17 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kubernetes-client.version>4.1.0</kubernetes-client.version>
+        <libs.version>1.0-SNAPSHOT</libs.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>pkest.com</groupId>
+                <artifactId>core-libs-common</artifactId>
+                <version>${libs.version}</version>
+            </dependency>
+
             <!-- aliyun sdk -->
             <dependency>
                 <groupId>com.aliyun</groupId>

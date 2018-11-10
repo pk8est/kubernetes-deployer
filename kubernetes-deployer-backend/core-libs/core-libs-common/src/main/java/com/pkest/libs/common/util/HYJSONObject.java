@@ -1,4 +1,4 @@
-package com.pkest.libs.aliyun.util;
+package com.pkest.libs.common.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;

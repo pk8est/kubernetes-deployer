@@ -5,4 +5,7 @@ package com.pkest.libs.kubernetes.exception;
  * @date 2018/11/6 22:45
  */
 public class TimeoutException extends Exception{
+    public TimeoutException(String message) {
+        super(message);
+    }
 }

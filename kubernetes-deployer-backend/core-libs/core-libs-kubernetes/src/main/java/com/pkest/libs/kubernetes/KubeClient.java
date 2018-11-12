@@ -130,8 +130,6 @@ public interface KubeClient<T> {
 
     Deployment createDeployment(Deployment deployment) throws K8sDriverException;
 
-    Deployment createDeployment(Deployment deployment) throws K8sDriverException;
-
     Deployment deploymentInfo(String name) throws K8sDriverException;
 
     Deployment replaceDeployment(String name, Deployment deployment) throws K8sDriverException;

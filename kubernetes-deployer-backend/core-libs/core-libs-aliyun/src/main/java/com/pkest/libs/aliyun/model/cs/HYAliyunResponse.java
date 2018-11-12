@@ -1,8 +1,8 @@
 package com.pkest.libs.aliyun.model.cs;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.aliyuncs.http.HttpResponse;
-import com.pkest.libs.common.util.GsonUtils;
 import com.pkest.libs.common.util.HYJSONObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +16,18 @@ import lombok.Setter;
 @Setter
 public class HYAliyunResponse{
 
+    @JSONField(serialize = false)
     private transient HttpResponse response;
+    @JSONField(serialize = false)
     private transient JSONObject httpContentObject;
+    @JSONField(serialize = false)
     private String code;
+    @JSONField(serialize = false)
     private String message;
+    @JSONField(serialize = false)
     private String requestId;
 
+    @JSONField(serialize = false)
     public HttpResponse getResponse() {
         return response;
     }
@@ -30,6 +36,7 @@ public class HYAliyunResponse{
         this.response = response;
     }
 
+    @JSONField(serialize = false)
     public String getHttpContent(){
         if(response != null){
             return new String(response.getHttpContent());
@@ -37,6 +44,7 @@ public class HYAliyunResponse{
         return "";
     }
 
+    @JSONField(serialize = false)
     public Boolean isSuccess(){
         if(response != null) {
             return response.isSuccess();
@@ -44,6 +52,7 @@ public class HYAliyunResponse{
         return false;
     }
 
+    @JSONField(serialize = false)
     public Integer getStatus(){
         if(response != null) {
             return response.getStatus();
@@ -51,7 +60,8 @@ public class HYAliyunResponse{
         return 0;
     }
 
-    public JSONObject getJSONObject(){
+    @JSONField(serialize = false)
+    public JSONObject getObject(){
         if(httpContentObject == null){
             if(response != null){
                 httpContentObject = JSONObject.parseObject(new String(getHttpContent()));
@@ -67,10 +77,10 @@ public class HYAliyunResponse{
     }
 
     public <T> T get(String key, T defaultValue) {
-        return HYJSONObject.get(getJSONObject(), key, defaultValue);
+        return HYJSONObject.get(getObject(), key, defaultValue);
     }
 
     public String toString(){
-        return GsonUtils.getGson().toJson(this);
+        return HYJSONObject.toJSONString(this);
     }
 }

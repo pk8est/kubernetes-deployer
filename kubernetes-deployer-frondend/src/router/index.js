@@ -34,6 +34,21 @@ export const constantRouterMap = [
   { path: '/401', component: _import('errorPage/401'), hidden: true },
 
   {
+    path: '/cluster',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'cluster',
+    meta: {
+      title: '集群',
+      icon: 'table'
+    },
+    children: [
+      { path: 'index', component: _import('k8s/cluster/index'), name: '集群列表', meta: { title: '集群列表', noCache: true }},
+      { path: 'index', component: _import('k8s/cluster/index'), name: '集群列表', meta: { title: '集群列表', noCache: true }}
+    ]
+  },
+
+  {
     path: '/admin',
     component: Layout,
     redirect: 'noredirect',

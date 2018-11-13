@@ -1,10 +1,7 @@
 package com.pkest.backend.admin.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.aliyuncs.exceptions.ClientException;
-import com.pkest.backend.admin.util.AliyunUtils;
-import com.pkest.libs.aliyun.model.cs.HYDescribeClustersRequest;
+import com.pkest.backend.admin.service.ClusterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -25,16 +22,11 @@ public class ClusterController {
     private static final Logger logger = LoggerFactory.getLogger(ClusterController.class);
 
     @Resource
-    private AliyunUtils aliyunUtils;
+    private ClusterService clusterService;
 
     @GetMapping("/index")
     @ResponseBody
-    public Object index(){
-        try {
-            return aliyunUtils.getClient().describeClusters(new HYDescribeClustersRequest()).getList();
-        } catch (ClientException e) {
-            logger.error("", e);
-        }
-        return null;
+    public Object index() throws ClientException {
+        return clusterService.getClusterList();
     }
 }

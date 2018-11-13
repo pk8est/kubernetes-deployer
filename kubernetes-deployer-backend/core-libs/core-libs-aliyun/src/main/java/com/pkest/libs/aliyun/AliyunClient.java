@@ -13,7 +13,6 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.pkest.libs.aliyun.exception.AliyunClientException;
 import com.pkest.libs.aliyun.model.cs.HYAliyunListResponse;
 import com.pkest.libs.aliyun.model.cs.HYAliyunResponse;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +69,7 @@ public class AliyunClient{
 
     public HttpResponse doAction(AcsRequest request) throws ClientException{
         try {
+            request.setAcceptFormat(FormatType.JSON);
             if(!"GET".equals(request.getMethod())){
                 String requestBody = JSONObject.toJSONString(request, serializeConfig, Labels.includes("form"));
                 if(!"{}".equals(requestBody)){
@@ -85,7 +85,7 @@ public class AliyunClient{
             return response;
         } catch (ClientException e) {
             logger.error("[{}]ErrCode:{}, ErrorType:{} ErrMsg: {}",
-                    e.getRequestId(), e.getClass().getName(), e.getErrCode(), e.getErrorType(), e.getErrMsg());
+                    e.getRequestId(), e.getErrCode(), e.getErrorType(), e.getErrMsg());
             throw e;
         }
     }
@@ -93,18 +93,20 @@ public class AliyunClient{
     public <T extends HYAliyunResponse> T doAction(AcsRequest request, Class<T> clazz) throws ClientException{
         HttpResponse response = doAction(request);
         String content = response.getHttpContent().length == 0 ? "{}" : new String(response.getHttpContent());
-        HYAliyunResponse hyAliyunResponse ;
-        if(FormatType.JSON.equals(response.getHttpContentType()) && StringUtils.isNotBlank(content)){
-            hyAliyunResponse = JSONObject.parseObject(content, clazz);
-        }else{
-            hyAliyunResponse = JSONObject.parseObject("{}", clazz);
-        }
+        HYAliyunResponse hyAliyunResponse = JSONObject.parseObject(content, clazz);
         hyAliyunResponse.setResponse(response);
         return  (T)hyAliyunResponse;
     }
 
     public <T extends HYAliyunResponse> HYAliyunListResponse<T> doListAction(AcsRequest request, Class<T> clazz) throws ClientException{
-        return new HYAliyunListResponse(doAction(request), clazz);
+        HttpResponse response = doAction(request);
+        if(response.isSuccess()){
+            return new HYAliyunListResponse(doAction(request), clazz);
+        }
+        String content = response.getHttpContent().length == 0 ? "{}" : new String(response.getHttpContent());
+        HYAliyunListResponse hyAliyunListResponse = JSONObject.parseObject(content, HYAliyunListResponse.class);
+        hyAliyunListResponse.setResponse(response);
+        return hyAliyunListResponse;
     }
 
 }

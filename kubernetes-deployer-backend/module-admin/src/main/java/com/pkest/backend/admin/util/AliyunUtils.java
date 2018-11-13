@@ -19,7 +19,7 @@ public class AliyunUtils {
     @Value("${aliyun.account.accessSecret}")
     private String accessSecret;
 
-    private String region = "cn-shenzhen";
+    private String region = "cn-shenzhens";
 
     public AliyunCsClient getClient() {
         if (client == null){

@@ -47,7 +47,7 @@ public class KubeClientUtilsTest {
     @Before
     public void setUp() throws ClientException, K8sDriverException {
         aliyunCsClient = new AliyunCsClient(region, accessKey, accessSecret);
-        HYDescribeClusterCertsResponse response = aliyunCsClient.describeClusterCerts(new HYDescribeClusterCertsRequest(clusterId));
+        HYDescribeClusterCertsResponse response = aliyunCsClient.describeClusterCerts(new HYDescribeClusterCertsRequest(clusterId)).getInstance();
         if(!response.isSuccess()){
             logger.error("fail");
         }

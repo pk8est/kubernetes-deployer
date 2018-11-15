@@ -7,4 +7,6 @@ import com.aliyuncs.cs.model.v20151215.DescribeClustersRequest;
  * @date 2018/11/10 10:39
  */
 public class HYDescribeClustersRequest extends DescribeClustersRequest {
+
+
 }

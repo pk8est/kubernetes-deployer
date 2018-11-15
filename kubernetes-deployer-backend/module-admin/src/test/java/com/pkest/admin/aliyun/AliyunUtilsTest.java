@@ -1,8 +1,10 @@
 package com.pkest.admin.aliyun;
 
+import com.alibaba.fastjson.TypeReference;
 import com.aliyuncs.profile.DefaultProfile;
 import com.pkest.backend.admin.AdminApplication;
-import com.pkest.libs.aliyun.AliyunCsClient;
+import com.pkest.common.util.GsonUtils;
+import com.pkest.libs.aliyun.*;
 import com.pkest.libs.aliyun.model.cs.*;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
+
 /**
  * Created by wuzhonggui on 2018/11/9.
  * QQ: 2731429978
@@ -25,7 +29,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 public class AliyunUtilsTest {
 
-    private AliyunCsClient client;
+    private HYAliyunClient client;
 
     @Value("${aliyun.account.accessKey}")
     private String accessKey;
@@ -35,7 +39,7 @@ public class AliyunUtilsTest {
 
     private String region = "cn-shenzhen";
     private String clusterId = "c7686ee47740a444ba757ff4a6c5e979f";
-    private HYAliyunResponse response;
+    private HYAcsResponse response;
     private static final Logger logger = LoggerFactory.getLogger(AliyunUtilsTest.class);
 
     @Before
@@ -45,7 +49,9 @@ public class AliyunUtilsTest {
 
     @After
     public void print(){
-        logger.info("{} response: {}", response.getRequestId(), response);
+        if(response != null){
+            logger.info("{} response: {}", response);
+        }
     }
 
     @Test
@@ -93,8 +99,60 @@ public class AliyunUtilsTest {
 
     @Test
     public void DescribeClustersRequest() throws Exception{
+
         HYDescribeClustersRequest request = new HYDescribeClustersRequest();
-        response = client.describeClusters(request);
+        HYAcsListResponse<HYDescribeClustersResponse> response = client.describeClusters(request);
+        for (HYDescribeClustersResponse item: response.getInstance()){
+            System.err.println(GsonUtils.getGson().toJson(item));
+        }
+    }
+
+    @Test
+    public void DefaultAliyunClient() throws Exception{
+
+        DefaultAliyunClient client = new DefaultAliyunClient(region, accessKey, accessSecret);
+
+        HYDescribeClusterCertsRequest request = new HYDescribeClusterCertsRequest(clusterId);
+        HYAcsResponse<HYDescribeClusterCertsResponse> response = client.getAcsResponse(request, HYDescribeClusterCertsResponse.class);
+        System.err.println(response.getHttpContent());
+        System.err.println(response.getStatus());
+        System.err.println(response.isSuccess());
+        System.err.println(response.getInstance());
+    }
+
+    @Test
+    public void DefaultAliyunClient1() throws Exception{
+
+        DefaultAliyunClient client = new DefaultAliyunClient(region, accessKey, accessSecret);
+
+        HYDescribeClustersRequest request = new HYDescribeClustersRequest();
+        HYAcsListResponse<HYDescribeClustersResponse> response = client.getAcsResponseList(request, HYDescribeClustersResponse.class);
+        System.err.println(response.getHttpContent());
+        System.err.println(response.getStatus());
+        System.err.println(response.isSuccess());
+        System.err.println(response.getInstance().size());
+
+        for (HYDescribeClustersResponse item: response.getInstance()){
+            System.err.println(item);
+        }
+        //System.err.println(response.getList());
+    }
+
+    @Test
+    public void DefaultAliyunClient2() throws Exception{
+
+        DefaultAliyunClient client = new DefaultAliyunClient(region, accessKey, accessSecret);
+
+        HYDescribeClustersRequest request = new HYDescribeClustersRequest();
+        //HYAcsResponse<HYDescribeClustersResponse> response = client.getAcsResponse(request, HYDescribeClustersResponse.class);
+        HYAcsResponse<List<HYDescribeClustersResponse>> response = client.getAcsResponse(request, new TypeReference<List<HYDescribeClustersResponse>>(){});
+        System.err.println(response.getHttpContent());
+        System.err.println(response.getStatus());
+        System.err.println(response.isSuccess());
+        for (HYDescribeClustersResponse item: response.getInstance()){
+            System.err.println(item);
+        }
+        System.err.println(response.getRequestId());
     }
 
 }

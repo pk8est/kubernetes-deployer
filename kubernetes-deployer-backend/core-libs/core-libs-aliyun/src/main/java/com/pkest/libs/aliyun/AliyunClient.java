@@ -16,6 +16,8 @@ import com.pkest.libs.aliyun.model.cs.HYAliyunResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by wuzhonggui on 2018/11/9.
  * QQ: 2731429978
@@ -43,7 +45,7 @@ public class AliyunClient{
 
     public DefaultAcsClient getClient() throws AliyunClientException{
         if(client == null){
-            throw new AliyunClientException("client undefined!");
+            throw new AliyunClientException("Client.Undefined", "Aliyun client undefined!");
         }
         return client;
     }
@@ -63,11 +65,15 @@ public class AliyunClient{
     public AliyunClient(){}
 
     public AliyunClient(String region, String accessKey, String accessSecret){
-        profile = DefaultProfile.getProfile(region, accessKey, accessSecret);
-        client = new DefaultAcsClient(profile);
+        this(DefaultProfile.getProfile(region, accessKey, accessSecret));
     }
 
-    public HttpResponse doAction(AcsRequest request) throws ClientException{
+    public AliyunClient(DefaultProfile profile){
+        this.profile = profile;
+        this.client = new DefaultAcsClient(profile);
+    }
+
+    public HttpResponse doAction(AcsRequest request) throws AliyunClientException{
         try {
             request.setAcceptFormat(FormatType.JSON);
             if(!"GET".equals(request.getMethod())){
@@ -77,6 +83,7 @@ public class AliyunClient{
                     logger.debug("RequestBody: {}", requestBody);
                 }
             }
+
             HttpResponse response = getClient().doAction(request);
             logger.info("{} {} {}", request.getMethod(), response.getStatus(), response.getUrl());
             if(logger.isDebugEnabled()){
@@ -86,25 +93,39 @@ public class AliyunClient{
         } catch (ClientException e) {
             logger.error("[{}]ErrCode:{}, ErrorType:{} ErrMsg: {}",
                     e.getRequestId(), e.getErrCode(), e.getErrorType(), e.getErrMsg());
-            throw e;
+            throw new AliyunClientException(e.getErrCode(), e.getErrMsg(), e.getRequestId());
         }
     }
 
-    public <T extends HYAliyunResponse> T doAction(AcsRequest request, Class<T> clazz) throws ClientException{
+    public String getResponseContent(HttpResponse httpResponse) throws AliyunClientException {
+        String stringContent = null;
+
+        try {
+            if(null == httpResponse.getEncoding()) {
+                stringContent = new String(httpResponse.getHttpContent());
+            } else {
+                stringContent = new String(httpResponse.getHttpContent(), httpResponse.getEncoding());
+            }
+
+            return stringContent;
+        } catch (UnsupportedEncodingException var4) {
+            throw new AliyunClientException("SDK.UnsupportedEncoding", "Can not parse response due to un supported encoding.");
+        }
+    }
+
+    public <T extends HYAliyunResponse> T doAction(AcsRequest request, Class<T> clazz) throws AliyunClientException{
         HttpResponse response = doAction(request);
-        String content = response.getHttpContent().length == 0 ? "{}" : new String(response.getHttpContent());
-        HYAliyunResponse hyAliyunResponse = JSONObject.parseObject(content, clazz);
+        HYAliyunResponse hyAliyunResponse = JSONObject.parseObject(getResponseContent(response), clazz);
         hyAliyunResponse.setResponse(response);
         return  (T)hyAliyunResponse;
     }
 
-    public <T extends HYAliyunResponse> HYAliyunListResponse<T> doListAction(AcsRequest request, Class<T> clazz) throws ClientException{
+    public <T extends HYAliyunResponse> HYAliyunListResponse<T> doListAction(AcsRequest request, Class<T> clazz) throws AliyunClientException{
         HttpResponse response = doAction(request);
         if(response.isSuccess()){
             return new HYAliyunListResponse(doAction(request), clazz);
         }
-        String content = response.getHttpContent().length == 0 ? "{}" : new String(response.getHttpContent());
-        HYAliyunListResponse hyAliyunListResponse = JSONObject.parseObject(content, HYAliyunListResponse.class);
+        HYAliyunListResponse hyAliyunListResponse = JSONObject.parseObject(getResponseContent(response), HYAliyunListResponse.class);
         hyAliyunListResponse.setResponse(response);
         return hyAliyunListResponse;
     }

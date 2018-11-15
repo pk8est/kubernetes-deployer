@@ -1,6 +1,7 @@
 package com.pkest.backend.admin.util;
 
 import com.pkest.libs.aliyun.AliyunCsClient;
+import com.pkest.libs.aliyun.HYAliyunClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AliyunUtils {
 
-    private AliyunCsClient client;
+    private HYAliyunClient client;
 
     @Value("${aliyun.account.accessKey}")
     private String accessKey;
@@ -19,9 +20,9 @@ public class AliyunUtils {
     @Value("${aliyun.account.accessSecret}")
     private String accessSecret;
 
-    private String region = "cn-shenzhens";
+    private String region = "cn-shenzhen";
 
-    public AliyunCsClient getClient() {
+    public HYAliyunClient getClient() {
         if (client == null){
             synchronized (this){
                 if(client == null){

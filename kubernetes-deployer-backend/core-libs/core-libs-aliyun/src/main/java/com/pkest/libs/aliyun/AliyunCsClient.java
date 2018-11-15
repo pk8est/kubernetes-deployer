@@ -1,6 +1,8 @@
 package com.pkest.libs.aliyun;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.IClientProfile;
 import com.pkest.libs.aliyun.model.cs.*;
 
 /**
@@ -8,38 +10,64 @@ import com.pkest.libs.aliyun.model.cs.*;
  * QQ: 2731429978
  * Email: pk8est@qq.com
  */
-public class AliyunCsClient extends AliyunClient{
+public class AliyunCsClient implements HYAliyunClient{
 
-    public AliyunCsClient(String region, String accessKey, String accessSecret){
-        super(region, accessKey, accessSecret);
+    private DefaultAliyunClient client;
+
+    @Override
+    public DefaultAliyunClient getClient() {
+        return client;
     }
 
-    public HYDescribeClusterDetailResponse describeClusterDetail(String clusterId) throws ClientException {
+    @Override
+    public void setClient(DefaultAliyunClient client) {
+        this.client = client;
+    }
+
+    public AliyunCsClient(){
+    }
+
+    public AliyunCsClient(String region, String accessKey, String accessSecret){
+        setClient(new DefaultAliyunClient(region, accessKey, accessSecret));
+    }
+
+    public AliyunCsClient(IClientProfile clientProfile){
+        setClient(new DefaultAliyunClient(clientProfile));
+    }
+
+    @Override
+    public HYAcsResponse<HYDescribeClusterDetailResponse> describeClusterDetail(String clusterId) throws ServerException, ClientException {
         return describeClusterDetail(new HYDescribeClusterDetailRequest(clusterId));
     }
 
-    public HYDescribeClusterDetailResponse describeClusterDetail(HYDescribeClusterDetailRequest request) throws ClientException {
-        return doAction(request, HYDescribeClusterDetailResponse.class);
+    @Override
+    public HYAcsResponse<HYDescribeClusterDetailResponse> describeClusterDetail(HYDescribeClusterDetailRequest request) throws ServerException, ClientException {
+        return getClient().getAcsResponse(request, HYDescribeClusterDetailResponse.class);
     }
 
-    public HYCreateRepoResponse createRepo(HYCreateRepoRequest request) throws ClientException {
-        return doAction(request, HYCreateRepoResponse.class);
+    @Override
+    public HYAcsResponse<HYCreateRepoResponse> createRepo(HYCreateRepoRequest request) throws ServerException, ClientException {
+        return getClient().getAcsResponse(request, HYCreateRepoResponse.class);
     }
 
-    public HYDescribeClusterCertsResponse describeClusterCerts(HYDescribeClusterCertsRequest request) throws ClientException{
-        return doAction(request, HYDescribeClusterCertsResponse.class);
+    @Override
+    public HYAcsResponse<HYDescribeClusterCertsResponse> describeClusterCerts(HYDescribeClusterCertsRequest request) throws ServerException, ClientException{
+        return getClient().getAcsResponse(request, HYDescribeClusterCertsResponse.class);
     }
 
-    public HYCreateClusterResponse createCluster(HYCreateClusterRequest request) throws ClientException{
-        return doAction(request, HYCreateClusterResponse.class);
+    @Override
+    public HYAcsResponse<HYCreateClusterResponse> createCluster(HYCreateClusterRequest request) throws ServerException, ClientException{
+        return getClient().getAcsResponse(request, HYCreateClusterResponse.class);
     }
 
-    public HYDeleteClusterResponse deleteCluster(HYDeleteClusterRequest request) throws ClientException{
-        return doAction(request, HYDeleteClusterResponse.class);
+    @Override
+    public HYAcsResponse<HYDeleteClusterResponse> deleteCluster(HYDeleteClusterRequest request) throws ServerException, ClientException{
+        return getClient().getAcsResponse(request, HYDeleteClusterResponse.class);
     }
 
-    public HYAliyunListResponse<HYDescribeClustersResponse> describeClusters(HYDescribeClustersRequest request) throws ClientException{
-        return doListAction(request, HYDescribeClustersResponse.class);
+    @Override
+    public HYAcsListResponse<HYDescribeClustersResponse> describeClusters(HYDescribeClustersRequest request) throws ServerException, ClientException{
+        return getClient().getAcsResponseList(request, HYDescribeClustersResponse.class);
     }
 
 }

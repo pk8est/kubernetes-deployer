@@ -7,13 +7,13 @@ package com.pkest.backend.admin.configurer;
  */
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.pkest.common.core.Result;
 import com.pkest.common.core.ResultCode;
 import com.pkest.common.exception.ServiceException;
+import com.pkest.libs.aliyun.exception.AliyunClientException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -77,6 +77,8 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                     result.setCode(ResultCode.NOT_FOUND);
                 } else if (e instanceof ServletException) {
                     result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
+                } else if (e instanceof AliyunClientException) {
+                    result.setCode(ResultCode.ALIYUN_CLIENT_ERROR).setMessage(e.getMessage());
                 } else {
                     //系统内部异常,不返回给客户端,内部记录错误日志
                     result.setCode(ResultCode.INTERNAL_SERVER_ERROR);

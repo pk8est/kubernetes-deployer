@@ -20,6 +20,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kubernetes-client.version>4.1.0</kubernetes-client.version>
         <libs.version>1.0-SNAPSHOT</libs.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
@@ -85,6 +87,11 @@
             </dependency>
 
             <!--常用库依赖-->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.2</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>

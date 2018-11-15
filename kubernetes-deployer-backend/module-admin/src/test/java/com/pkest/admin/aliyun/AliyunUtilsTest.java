@@ -88,7 +88,7 @@ public class AliyunUtilsTest {
 
     @Test
     public void DeleteClusterRequest() throws Exception{
-        HYDeleteClusterRequest request = new HYDeleteClusterRequest("cc49b730207c2460db4eb579cbeb2604e");
+        HYDeleteClusterRequest request = new HYDeleteClusterRequest("cc862cf8b2ec9433197af7925a05515ce");
         response = client.deleteCluster(request);
         if(response.isSuccess()){
             logger.info("删除成功!");

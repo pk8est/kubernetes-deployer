@@ -5,7 +5,6 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.Labels;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 import com.aliyuncs.AcsError;
 import com.aliyuncs.AcsRequest;
 import com.aliyuncs.DefaultAcsClient;
@@ -21,12 +20,15 @@ import com.aliyuncs.reader.Reader;
 import com.aliyuncs.reader.ReaderFactory;
 import com.aliyuncs.transform.UnmarshallerContext;
 import com.pkest.libs.aliyun.exception.AliyunClientException;
+import com.pkest.libs.common.util.GsonUtils;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wuzhonggui on 2018/11/9.
@@ -114,15 +116,15 @@ public class DefaultAliyunClient{
     }
 
     public <T>HYAcsResponse<T> getAcsResponse(AcsRequest request, Class<T> clazz) throws ServerException, ClientException {
-        return this.parseAcsResponse(buildType(clazz), doAction(request));
+        return parseAcsResponse(CommonUtils.buildType(clazz), doAction(request));
     }
 
     public <T>HYAcsResponse<T> getAcsResponse(AcsRequest request, Type type) throws ServerException, ClientException {
-        return this.parseAcsResponse(type, doAction(request));
+        return parseAcsResponse(type, doAction(request));
     }
 
     public <T>HYAcsResponse<T> getAcsResponse(AcsRequest request, TypeReference typeReference) throws ServerException, ClientException {
-        return this.parseAcsResponse(typeReference.getType(), doAction(request));
+        return parseAcsResponse(typeReference.getType(), doAction(request));
     }
 
     private <T>HYAcsResponse<T> parseAcsResponse(Type type, HttpResponse httpResponse) throws ClientException {
@@ -137,7 +139,7 @@ public class DefaultAliyunClient{
     }
 
     public <T>HYAcsListResponse<T> getAcsResponseList(AcsRequest request, Class<T> clazz) throws ServerException, ClientException {
-        return this.parseAcsResponseList(buildType(List.class, clazz), doAction(request));
+        return parseAcsResponseList(CommonUtils.buildType(List.class, clazz), doAction(request));
     }
 
     private <T>HYAcsListResponse<T> parseAcsResponseList(Type type, HttpResponse httpResponse) throws ClientException {
@@ -158,17 +160,20 @@ public class DefaultAliyunClient{
     }
 
     public Object parseResponseContent(HttpResponse httpResponse, Type type) throws ClientException {
-        return JSONObject.parseObject(this.getResponseContent(httpResponse), type);
+        return JSONObject.parseObject(getResponseContent(httpResponse), type);
     }
 
     private AcsError readError(HttpResponse httpResponse, FormatType format) throws ClientException {
         AcsError error = new AcsError();
         Reader reader = ReaderFactory.createInstance(format);
         UnmarshallerContext context = new UnmarshallerContext();
-        String stringContent = this.getResponseContent(httpResponse);
-        context.setResponseMap(reader.read(stringContent, "Error"));
+        String stringContent = getResponseContent(httpResponse);
+        Map<String, String> map = new CaseInsensitiveMap(reader.read(stringContent, "Error"));
+        context.setResponseMap(map);
         return error.getInstance(context);
     }
+
+
 
     private String getResponseContent(HttpResponse httpResponse) throws ClientException {
         String stringContent = null;
@@ -186,14 +191,6 @@ public class DefaultAliyunClient{
         }
     }
 
-    private static Type buildType(Type... types) {
-        ParameterizedTypeImpl beforeType = null;
-        if (types != null && types.length > 0) {
-            for (int i = types.length - 1; i > 0; i--) {
-                beforeType = new ParameterizedTypeImpl(new Type[]{beforeType == null ? types[i] : beforeType}, null, types[i - 1]);
-            }
-        }
-        return beforeType;
-    }
+
 
 }

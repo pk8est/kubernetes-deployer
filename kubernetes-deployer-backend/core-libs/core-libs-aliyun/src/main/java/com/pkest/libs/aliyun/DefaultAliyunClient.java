@@ -20,7 +20,6 @@ import com.aliyuncs.reader.Reader;
 import com.aliyuncs.reader.ReaderFactory;
 import com.aliyuncs.transform.UnmarshallerContext;
 import com.pkest.libs.aliyun.exception.AliyunClientException;
-import com.pkest.libs.common.util.GsonUtils;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wuzhonggui on 2018/11/9.
@@ -93,9 +91,9 @@ public class DefaultAliyunClient{
         }
         HttpResponse baseResponse = getClient().doAction(request);
         logger.info("{} {} {}", request.getMethod(), baseResponse.getStatus(), baseResponse.getUrl());
-        if (logger.isDebugEnabled()) {
+        /*if (logger.isDebugEnabled()) {
             logger.debug("Content: {}", new String(baseResponse.getHttpContent()));
-        }
+        }*/
         if(!baseResponse.isSuccess()) {
             AcsError error = this.readError(baseResponse, baseResponse.getHttpContentType());
             if(500 <= baseResponse.getStatus()) {
@@ -168,12 +166,9 @@ public class DefaultAliyunClient{
         Reader reader = ReaderFactory.createInstance(format);
         UnmarshallerContext context = new UnmarshallerContext();
         String stringContent = getResponseContent(httpResponse);
-        Map<String, String> map = new CaseInsensitiveMap(reader.read(stringContent, "Error"));
-        context.setResponseMap(map);
+        context.setResponseMap(new CaseInsensitiveMap(reader.read(stringContent, "Error")));
         return error.getInstance(context);
     }
-
-
 
     private String getResponseContent(HttpResponse httpResponse) throws ClientException {
         String stringContent = null;

@@ -3,6 +3,7 @@ package com.pkest.libs.aliyun;
 import com.aliyuncs.http.HttpResponse;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 @Data
 public class HYAcsListResponse<T> extends HYAcsResponse{
 
-    private List<T> instance;
+    private List<T> instance = new ArrayList();
 
     public HYAcsListResponse() {
 

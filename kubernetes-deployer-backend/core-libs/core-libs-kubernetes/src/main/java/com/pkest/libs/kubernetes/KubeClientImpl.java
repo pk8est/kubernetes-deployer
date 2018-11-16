@@ -32,7 +32,8 @@ public class KubeClientImpl implements KubeClient<KubernetesClient> {
     private Config config;
     private static final int CONNECTION_TIMEOUT = 3 * 1000;
     private static final int REQUEST_TIMEOUT = 3 * 1000;
-    public static String K8S_JOB_VERSION = "extensions/v1beta1";
+    //public static String K8S_JOB_VERSION = "extensions/v1beta1";
+    public static String K8S_JOB_VERSION = "batch/v1";
     private static final Logger logger = LoggerFactory.getLogger(KubeClientImpl.class);
 
     @Override

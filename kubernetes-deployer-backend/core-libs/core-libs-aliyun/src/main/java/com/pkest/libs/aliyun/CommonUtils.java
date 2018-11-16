@@ -20,10 +20,12 @@ public class CommonUtils {
     public static Type buildType(Type... types) {
         ParameterizedTypeImpl beforeType = null;
         if (types != null && types.length > 0) {
+            if(types.length == 1) return types[0];
             for (int i = types.length - 1; i > 0; i--) {
                 beforeType = new ParameterizedTypeImpl(new Type[]{beforeType == null ? types[i] : beforeType}, null, types[i - 1]);
             }
         }
+
         return beforeType;
     }
 }

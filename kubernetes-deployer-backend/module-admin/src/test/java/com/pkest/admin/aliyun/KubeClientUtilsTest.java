@@ -8,6 +8,7 @@ import com.pkest.libs.aliyun.model.cs.HYDescribeClusterCertsResponse;
 import com.pkest.libs.kubernetes.KubeClient;
 import com.pkest.libs.kubernetes.KubeClientImpl;
 import com.pkest.libs.kubernetes.exception.K8sDriverException;
+import io.fabric8.kubernetes.api.model.batch.Job;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wuzhonggui on 2018/11/9.
@@ -53,7 +57,7 @@ public class KubeClientUtilsTest {
         }
         kubeClient = KubeClientImpl.build(KubeClientImpl.configDefaultBuilder()
                 .withMasterUrl("https://47.107.13.156:6443")
-                //.withNamespace("test-001")
+                .withNamespace("default")
                 .withCaCertData(response.getCa())
                 .withClientCertData(response.getCert())
                 .withClientKeyData(response.getKey())
@@ -62,7 +66,8 @@ public class KubeClientUtilsTest {
 
     @After
     public void print(){
-        logger.info("{} ", object);
+//        logger.info("{} ", object);
+        System.err.println(object);
     }
 
     @Test
@@ -78,6 +83,24 @@ public class KubeClientUtilsTest {
     @Test
     public void listNode() throws Exception{
         object = kubeClient.listNode();
+    }
+
+    @Test
+    public void listNodeTags() throws Exception{
+        Map<String, String> selector = new HashMap<>();
+        selector.put("test", "USER_LABEL_VALUE");
+        object = kubeClient.listNode(selector);
+    }
+
+    @Test
+    public void listJob() throws Exception{
+        object = kubeClient.listJob();
+    }
+
+    @Test
+    public void createJob() throws Exception{
+        Job job = new Job();
+        object = kubeClient.createJob(job);
     }
 
 

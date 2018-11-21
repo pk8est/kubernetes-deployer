@@ -12,6 +12,7 @@
         <module>core-common</module>
         <module>module-admin</module>
         <module>core-libs</module>
+        <module>core-model</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,6 +27,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>pkest.com</groupId>
+                <artifactId>core-model</artifactId>
+                <version>${libs.version}</version>
+            </dependency>
             <dependency>
                 <groupId>pkest.com</groupId>
                 <artifactId>core-common</artifactId>
@@ -109,6 +115,7 @@
                 <artifactId>lombok</artifactId>
                 <version>1.16.10</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

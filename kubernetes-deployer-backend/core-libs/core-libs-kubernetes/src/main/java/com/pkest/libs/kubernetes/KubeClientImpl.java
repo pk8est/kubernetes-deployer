@@ -2,6 +2,7 @@ package com.pkest.libs.kubernetes;
 
 import com.pkest.libs.kubernetes.exception.K8sDriverException;
 import com.pkest.libs.kubernetes.exception.TimeoutException;
+import com.pkest.libs.kubernetes.util.HttpClientUtils;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.api.model.batch.Job;
@@ -73,7 +74,7 @@ public class KubeClientImpl implements KubeClient<KubernetesClient> {
     public static KubeClient build(Config config) throws K8sDriverException {
         KubernetesClient client;
         try {
-            client = new DefaultKubernetesClient(config);
+            client = new DefaultKubernetesClient(HttpClientUtils.createHttpClient(config), config);
         } catch (Exception e) {
             throw new K8sDriverException("instantialize kubernetes client error");
         }
@@ -461,7 +462,7 @@ public class KubeClientImpl implements KubeClient<KubernetesClient> {
         }
         logger.debug("create deployment with deployment=\n" + deployment);
         try {
-            return client.extensions().deployments().create(deployment);
+            return client.apps().deployments().create(deployment);
         } catch (KubernetesClientException e) {
             throw new K8sDriverException(e.getMessage());
         }

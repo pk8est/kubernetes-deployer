@@ -43,7 +43,7 @@ export const constantRouterMap = [
       icon: 'table'
     },
     children: [
-      { path: 'index', component: _import('k8s/cluster/index'), name: '集群列表', meta: { title: '集群列表', noCache: true }},
+      { path: 'index', component: _import('k8s/deployment/index'), name: '发布列表', meta: { title: '发布列表', noCache: true }},
       { path: 'index', component: _import('k8s/cluster/index'), name: '集群列表', meta: { title: '集群列表', noCache: true }}
     ]
   },

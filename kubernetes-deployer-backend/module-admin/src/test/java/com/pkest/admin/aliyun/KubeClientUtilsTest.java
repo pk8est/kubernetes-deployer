@@ -1,16 +1,22 @@
 package com.pkest.admin.aliyun;
 
-import com.aliyuncs.exceptions.ClientException;
+import com.google.common.collect.ImmutableMap;
 import com.pkest.backend.admin.AdminApplication;
 import com.pkest.libs.aliyun.AliyunCsClient;
 import com.pkest.libs.aliyun.model.cs.HYDescribeClusterCertsRequest;
 import com.pkest.libs.aliyun.model.cs.HYDescribeClusterCertsResponse;
 import com.pkest.libs.kubernetes.KubeClient;
 import com.pkest.libs.kubernetes.KubeClientImpl;
-import com.pkest.libs.kubernetes.exception.K8sDriverException;
+import io.fabric8.kubernetes.api.model.IntOrString;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
 import io.fabric8.kubernetes.api.model.batch.Job;
+import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -35,6 +41,9 @@ public class KubeClientUtilsTest {
 
     private AliyunCsClient aliyunCsClient;
 
+    @Rule
+    public KubernetesServer server = new KubernetesServer();
+
     private KubeClient kubeClient;
 
     @Value("${aliyun.account.accessKey}")
@@ -49,7 +58,7 @@ public class KubeClientUtilsTest {
     private static final Logger logger = LoggerFactory.getLogger(KubeClientUtilsTest.class);
 
     @Before
-    public void setUp() throws ClientException, K8sDriverException {
+    public void setUp() throws Exception {
         aliyunCsClient = new AliyunCsClient(region, accessKey, accessSecret);
         HYDescribeClusterCertsResponse response = aliyunCsClient.describeClusterCerts(new HYDescribeClusterCertsRequest(clusterId)).getInstance();
         if(!response.isSuccess()){
@@ -57,16 +66,16 @@ public class KubeClientUtilsTest {
         }
         kubeClient = KubeClientImpl.build(KubeClientImpl.configDefaultBuilder()
                 .withMasterUrl("https://47.107.13.156:6443")
-                .withNamespace("default")
+                .withNamespace("test-001")
                 .withCaCertData(response.getCa())
                 .withClientCertData(response.getCert())
                 .withClientKeyData(response.getKey())
+                .withLoggingInterval(0)
                 .build());
     }
 
     @After
     public void print(){
-//        logger.info("{} ", object);
         System.err.println(object);
     }
 
@@ -103,5 +112,41 @@ public class KubeClientUtilsTest {
         object = kubeClient.createJob(job);
     }
 
+    @Test
+    public void createDeployment() throws Exception{
+        Deployment deployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName("deployment1")
+                .withLabels(ImmutableMap.<String, String>of("test", "test000"))
+                .withNamespace("test-001")
+                .endMetadata()
+                .build();
+        Map<String, String> annotations = new HashMap<>();
+        annotations.put("test", "USER_LABEL_VALUE");
+        Map<String, String> podLabels = ImmutableMap.<String, String>of("test", "test000");
+
+        DeploymentSpec deploymentSpec = new DeploymentSpecBuilder().withNewStrategy()
+                .withNewRollingUpdate().withMaxSurge(new IntOrString(0)).withMaxUnavailable(new IntOrString(1))
+                .endRollingUpdate().endStrategy()
+                .withNewSelector().withMatchLabels(ImmutableMap.<String, String>of("test", "test000")).endSelector()
+                .withNewTemplate().withNewMetadata().withLabels(podLabels)
+                .withAnnotations(annotations).withDeletionGracePeriodSeconds(0L).endMetadata()
+                .endTemplate().build();
+        deployment.setSpec(deploymentSpec);
+
+       /* new DeploymentSpecBuilder().buildTemplate();
+        DeploymentSpec deploymentSpec = new DeploymentSpec();
+        PodTemplateSpec templateSpec = new PodTemplateSpec();
+        deploymentSpec.setTemplate(templateSpec);
+        Deployment deployment = new DeploymentBuilder().withNewMetadata()
+                .withName("deployment1")
+                .withNamespace("test-001")
+                .addToLabels("testKey", "testValue")
+                .endMetadata()
+                .withNewSpec()
+                .endSpec()
+                .build();*/
+        object = kubeClient.createDeployment(deployment);
+    }
 
 }

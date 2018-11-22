@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>pkest.com</groupId>
-            <artifactId>core-common</artifactId>
+            <artifactId>core-model</artifactId>
         </dependency>
         <dependency>
             <groupId>pkest.com</groupId>

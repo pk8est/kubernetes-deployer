@@ -13,7 +13,7 @@ import java.util.List;
 public class DeploymentRequest extends BaseRequestModel{
     private String deployName;
     private long projectId;
-    private int clusterId;
+    private String clusterId;
     private String namespace = "default";
     private int replicas = 2;
 

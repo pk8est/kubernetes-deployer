@@ -1,11 +1,10 @@
 package com.pkest.backend.admin.controller;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
+import com.pkest.backend.admin.model.DeploymentRequest;
 import com.pkest.backend.admin.service.ClusterService;
 import com.pkest.common.util.GsonUtils;
-import com.pkest.model.request.DeploymentRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -32,8 +31,9 @@ public class DeploymentController {
 
     @ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Object create(@RequestBody DeploymentRequest deploymentRequest) throws ClientException {
+    public Object create(@RequestBody DeploymentRequest deploymentRequest) throws Exception {
         System.err.println(GsonUtils.getGson().toJson(deploymentRequest));
+        clusterService.createDeployment(deploymentRequest);
         return ImmutableMap.of("code", "0", "message", "成功");
         //return clusterService.getClusterList();
     }

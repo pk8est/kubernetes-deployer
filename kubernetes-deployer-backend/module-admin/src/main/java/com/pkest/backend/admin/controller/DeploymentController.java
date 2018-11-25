@@ -30,7 +30,7 @@ public class DeploymentController {
     private ClusterService clusterService;
 
     @ResponseBody
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST,  produces = "application/json;charset=UTF-8")
     public Object create(@RequestBody DeploymentRequest deploymentRequest) throws Exception {
         System.err.println(GsonUtils.getGson().toJson(deploymentRequest));
         clusterService.createDeployment(deploymentRequest);

@@ -12,6 +12,7 @@ import com.pkest.libs.aliyun.model.cs.HYDescribeClustersRequest;
 import com.pkest.libs.aliyun.model.cs.HYDescribeClustersResponse;
 import com.pkest.libs.kubernetes.KubeClient;
 import com.pkest.libs.kubernetes.KubeClientImpl;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,9 @@ public class ClusterServiceImpl implements ClusterService {
     @Override
     public void createDeployment(Deployment deployment) throws Exception {
         String clusterId = "c7686ee47740a444ba757ff4a6c5e979f";
+        ObjectMeta objectMeta = new ObjectMeta();
+        objectMeta.setName("test-" + System.currentTimeMillis());
+        deployment.setMetadata(objectMeta);
         HYDescribeClusterCertsResponse response = aliyunUtils.getClient().describeClusterCerts(new HYDescribeClusterCertsRequest(clusterId)).getInstance();
         KubeClient kubeClient = KubeClientImpl.build(KubeClientImpl.configDefaultBuilder()
                 .withMasterUrl("https://47.107.13.156:6443")

@@ -13,6 +13,7 @@
         <module>core-libs-common</module>
         <module>core-libs-kubernetes</module>
         <module>core-libs-aliyun</module>
+        <module>core-libs-dbgeneral</module>
     </modules>
     <artifactId>core-libs</artifactId>
 

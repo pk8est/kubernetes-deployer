@@ -20,6 +20,10 @@
             <groupId>pkest.com</groupId>
             <artifactId>core-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>pkest.com</groupId>
+            <artifactId>core-libs-dbgeneral</artifactId>
+        </dependency>
 
         <!-- test about -->
         <dependency>

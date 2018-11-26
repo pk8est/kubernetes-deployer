@@ -48,7 +48,6 @@ public class ClusterServiceImpl implements ClusterService {
         objectMeta.setName("test-" + System.currentTimeMillis());
         deployment.setMetadata(objectMeta);
         LabelSelector selector = new LabelSelector();
-        deployment.getSpec().setSelector();
         HYDescribeClusterCertsResponse response = aliyunUtils.getClient().describeClusterCerts(new HYDescribeClusterCertsRequest(clusterId)).getInstance();
         KubeClient kubeClient = KubeClientImpl.build(KubeClientImpl.configDefaultBuilder()
                 .withMasterUrl("https://47.107.13.156:6443")

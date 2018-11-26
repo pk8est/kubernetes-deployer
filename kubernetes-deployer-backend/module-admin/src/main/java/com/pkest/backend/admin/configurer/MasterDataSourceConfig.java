@@ -1,7 +1,8 @@
 package com.pkest.backend.admin.configurer;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.pkest.libs.dbgeneral.PaginationStatementInterceptor;
+import com.pkest.libs.myibatis.HYMybatisConfiguration;
+import com.pkest.libs.myibatis.PaginationStatementInterceptor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -42,9 +43,11 @@ public class MasterDataSourceConfig {
     @Primary
     public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource) throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+        org.apache.ibatis.session.Configuration configuration = new HYMybatisConfiguration();
         //sessionFactory.setPlugins(new Interceptor[] {new PaginationStatementInterceptor2()});
         sessionFactory.setPlugins(new Interceptor[] {new PaginationStatementInterceptor()});
         sessionFactory.setDataSource(masterDataSource);
+        sessionFactory.setConfiguration(configuration);
         try{
             sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MAPPER_LOCATION));
         }catch (Exception e){
